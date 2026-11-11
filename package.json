@@ -1,0 +1,11 @@
+{
+  "name": "bh-match-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test bh-demo/tests/*.test.mjs",
+    "start": "node bh-demo/scripts/serve.mjs"
+  },
+  "engines": { "node": ">=22" }
+}

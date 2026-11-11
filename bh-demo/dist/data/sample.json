@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "source": "AAA.xlsx / Sheet1，脱敏示例；数量经确认均为 1",
+  "parts": ["BZ1100001", "BZ1200002", "BZ1200003", "BZ1200004", "BZ1200005", "BZ1300006", "BZ1300007", "BZ1300008", "BZ1300009", "BZ1300010", "BZ1300011", "BZ1300012", "BZ1300013", "BZ1300014", "BZ1400015", "BZ1400016", "BZ1400017", "BZ1400018"],
+  "combinations": [
+    {"bh":"BH1720001","items":[{"code":"BZ1100001","quantity":1},{"code":"BZ1300006","quantity":1},{"code":"BZ1300011","quantity":1}]},
+    {"bh":"BH1720002","items":[{"code":"BZ1200004","quantity":1},{"code":"BZ1300011","quantity":1},{"code":"BZ1400015","quantity":1}]},
+    {"bh":"BH1720003","items":[{"code":"BZ1300006","quantity":1},{"code":"BZ1300007","quantity":1},{"code":"BZ1300014","quantity":1},{"code":"BZ1400018","quantity":1}]},
+    {"bh":"BH1720004","items":[{"code":"BZ1300008","quantity":1},{"code":"BZ1300011","quantity":1},{"code":"BZ1300014","quantity":1}]},
+    {"bh":"BH1720005","items":[{"code":"BZ1200005","quantity":1},{"code":"BZ1400016","quantity":1},{"code":"BZ1400018","quantity":1}]},
+    {"bh":"BH1720006","items":[{"code":"BZ1100001","quantity":1},{"code":"BZ1200005","quantity":1},{"code":"BZ1300008","quantity":1},{"code":"BZ1300012","quantity":1}]},
+    {"bh":"BH1720007","items":[{"code":"BZ1200002","quantity":1},{"code":"BZ1200005","quantity":1},{"code":"BZ1300008","quantity":1},{"code":"BZ1300011","quantity":1},{"code":"BZ1300014","quantity":1},{"code":"BZ1400017","quantity":1}]}
+  ]
+}

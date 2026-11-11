@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="BH 零件组合匹配演示。按完整零件号与数量精确匹配，支持浏览器本地新增组合。">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <title>BH 零件组合匹配 · 脱敏演示</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <aside class="sidebar" aria-label="导航">
+    <a class="brand" href="./"><span class="brand-mark">bh<span>·</span></span><span>零件组合工作台<small>PARTS MATCHING</small></span></a>
+    <div class="nav-label">工作空间</div>
+    <nav>
+      <a class="nav-item active" href="#main"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H4v6h6V4Zm10 0h-6v6h6V4ZM10 14H4v6h6v-6Zm10 0h-6v6h6v-6Z"/></svg>组合匹配<span class="nav-dot"></span></a>
+      <a class="nav-item" href="#library"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/></svg>组合库</a>
+    </nav>
+    <div class="side-note"><span class="small-pill">DEMO / V1.0</span><p>从一套零件，<br>找到对应的 BH。</p><small>使用已确认的脱敏示例数据</small></div>
+    <div class="side-bottom"><span class="status-dot"></span>浏览器本地模式</div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><span>工作空间 <span class="breadcrumb">/</span> 组合匹配</span><span class="demo-tag"><span class="status-dot"></span>脱敏演示</span></header>
+    <main id="main" tabindex="-1">
+      <section class="page-heading"><div><div class="eyebrow">EXACT COMBINATION MATCH</div><h1>零件组合匹配<span>。</span></h1><p>输入完整零件清单，精确找到对应的 BH 代号。</p></div><button class="button secondary export-button" id="export" disabled><span aria-hidden="true">↓</span> 导出组合数据</button></section>
+      <div class="notice"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></svg><p><strong>这是静态演示页。</strong>新增 BH 仅保存在当前浏览器，刷新后仍可使用；不会同步给其他人，清除浏览器数据会丢失。</p></div>
+      <section class="stats" aria-label="数据概览"><div><span>可用组合</span><strong id="stat-combinations">—</strong><small>BH</small></div><div><span>示例零件库</span><strong id="stat-parts">—</strong><small>种零件</small></div><div><span>本地新增</span><strong id="stat-local">—</strong><small>个组合</small></div><div class="rule-stat"><span>匹配规则</span><strong>完全一致</strong><small>零件号 ＋ 数量 · 忽略顺序</small></div></section>
+      <section class="matching-layout" aria-label="匹配工作区">
+        <div class="panel input-panel"><div class="panel-heading"><div><span class="step">01</span><h2>输入零件清单</h2></div><button class="text-button" id="load-sample" disabled>载入匹配示例 <span aria-hidden="true">↗</span></button></div>
+          <p class="panel-description">粘贴 Excel 两列，或输入以逗号分隔的零件号。</p>
+          <label class="editor-label" for="parts-input"><span>零件号 <span class="muted">/</span> 数量</span><span>未填写数量时按 1 计算</span></label>
+          <textarea id="parts-input" rows="8" spellcheck="false" autocapitalize="off" autocomplete="off" maxlength="200000" aria-describedby="input-help input-error" placeholder="BZ1100001    1&#10;BZ1300006    1&#10;BZ1300011    1" disabled></textarea>
+          <div class="input-footer"><span id="input-help">每行一个零件号及数量，支持逗号、空格或 Tab 分隔。</span><button id="clear-input" class="text-button" disabled>清空</button></div>
+          <div id="input-error" class="inline-error" role="alert" hidden></div>
+          <div class="input-actions"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>重复零件自动合并数量</span><button class="button primary" id="match" disabled>查找对应 BH <span aria-hidden="true">→</span></button></div>
+        </div>
+        <div class="panel result-panel"><div class="panel-heading"><div><span class="step">02</span><h2>匹配结果</h2></div><span id="result-badge" class="neutral-badge">等待输入</span></div><div id="result" aria-live="polite" aria-atomic="true"><div class="empty-result"><div class="search-illustration"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="m27 12 16 9v18l-16 9-16-9V21l16-9Zm0 18 16-9M11 21l16 9v18"/><circle cx="44" cy="43" r="10"/><path d="m51 51 7 7"/></svg></div><h3>等待匹配你的组合</h3><p>载入一组示例，或粘贴自己的零件清单。<br>零件号与数量全部一致，才会匹配成功。</p><div class="rule-chips"><span>顺序无关</span><span>数量精确</span><span>整套匹配</span></div></div></div></div>
+      </section>
+      <section class="panel library-panel" id="library"><div class="library-heading"><div><div class="eyebrow">COMBINATION LIBRARY</div><h2>组合库 <span id="library-count" class="count-badge">—</span></h2><p>从现有组合开始，快速验证匹配结果。</p></div><label class="library-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg><span class="sr-only">搜索 BH 或零件号</span><input id="library-search" type="search" placeholder="搜索 BH 或零件号" disabled></label></div><div class="table-scroll"><table><caption class="sr-only">当前浏览器可用的全部 BH 及零件组合</caption><thead><tr><th>BH 代号</th><th>完整零件组合</th><th>种类 / 总数量</th><th>来源</th><th><span class="sr-only">操作</span></th></tr></thead><tbody id="library-body"><tr><td colspan="5" class="table-empty">正在读取示例数据…</td></tr></tbody></table></div><div class="library-footer"><span id="library-summary">正在加载</span><button class="text-button danger-text" id="reset" disabled>重置本地记录</button></div></section>
+      <footer class="page-footer"><span>BH MATCH <span class="muted">/</span> 脱敏示例工作台</span><span>相同清单复用 BH，新增组合保存在本机。</span></footer>
+      <div id="global-status" class="toast" role="status" hidden></div>
+    </main>
+  </div>
+  <dialog id="reset-dialog"><form method="dialog"><h2>重置本地新增记录？</h2><p>原始 7 个示例组合会保留。当前浏览器中新增的组合将被移除，建议先导出数据。</p><div class="dialog-actions"><button class="button secondary" value="cancel">取消</button><button class="button danger" value="reset">重置本地记录</button></div></form></dialog>
+  <noscript><p class="noscript">请启用 JavaScript 以使用组合匹配功能。</p></noscript>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>
