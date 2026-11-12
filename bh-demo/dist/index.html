@@ -8,6 +8,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./cloud.css">
   <title>BH 零件组合匹配 · 脱敏演示</title>
 </head>
 <body>
@@ -18,6 +19,7 @@
     <nav>
       <a class="nav-item active" href="#main"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H4v6h6V4Zm10 0h-6v6h6V4ZM10 14H4v6h6v-6Zm10 0h-6v6h6v-6Z"/></svg>组合匹配<span class="nav-dot"></span></a>
       <a class="nav-item" href="#library"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/></svg>组合库</a>
+      <a class="nav-item" href="#similarity-cloud"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="7" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="m8 7 8-1M7 9l4 7m6-8-4 8"/></svg>相似度点云</a>
     </nav>
     <div class="side-note"><span class="small-pill">DEMO / V1.0</span><p>从一套零件，<br>找到对应的 BH。</p><small>使用已确认的脱敏示例数据</small></div>
     <div class="side-bottom"><span class="status-dot"></span>浏览器本地模式</div>
@@ -40,6 +42,28 @@
         <div class="panel result-panel"><div class="panel-heading"><div><span class="step">02</span><h2>匹配结果</h2></div><span id="result-badge" class="neutral-badge">等待输入</span></div><div id="result" aria-live="polite" aria-atomic="true"><div class="empty-result"><div class="search-illustration"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="m27 12 16 9v18l-16 9-16-9V21l16-9Zm0 18 16-9M11 21l16 9v18"/><circle cx="44" cy="43" r="10"/><path d="m51 51 7 7"/></svg></div><h3>等待匹配你的组合</h3><p>载入一组示例，或粘贴自己的零件清单。<br>零件号与数量全部一致，才会匹配成功。</p><div class="rule-chips"><span>顺序无关</span><span>数量精确</span><span>整套匹配</span></div></div></div></div>
       </section>
       <section class="panel library-panel" id="library"><div class="library-heading"><div><div class="eyebrow">COMBINATION LIBRARY</div><h2>组合库 <span id="library-count" class="count-badge">—</span></h2><p>从现有组合开始，快速验证匹配结果。</p></div><label class="library-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg><span class="sr-only">搜索 BH 或零件号</span><input id="library-search" type="search" placeholder="搜索 BH 或零件号" disabled></label></div><div class="table-scroll"><table><caption class="sr-only">当前浏览器可用的全部 BH 及零件组合</caption><thead><tr><th>BH 代号</th><th>完整零件组合</th><th>种类 / 总数量</th><th>来源</th><th><span class="sr-only">操作</span></th></tr></thead><tbody id="library-body"><tr><td colspan="5" class="table-empty">正在读取示例数据…</td></tr></tbody></table></div><div class="library-footer"><span id="library-summary">正在加载</span><button class="text-button danger-text" id="reset" disabled>重置本地记录</button></div></section>
+      <section class="panel cloud-panel" id="similarity-cloud" aria-labelledby="cloud-title" aria-busy="false">
+        <div class="cloud-heading"><div><div class="eyebrow">COMBINATION SIMILARITY</div><h2 id="cloud-title">BH 相似度点云</h2><p>每个点是一套组合。点击 BH，查看相近组合与零件差异。</p></div><span class="cloud-heading-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="7" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="m8 7 8-1M7 9l4 7m6-8-4 8"/></svg>二维投影</span></div>
+        <div class="cloud-controls">
+          <label>焦点 BH<select id="cloud-focus" disabled aria-label="选择点云焦点 BH"></select></label>
+          <label>相似度依据<select id="cloud-metric" disabled><option value="quantity">数量相似（考虑数量）</option><option value="parts">种类重合（忽略数量）</option></select></label>
+          <label class="cloud-threshold-label"><span class="cloud-threshold-title">连线显示阈值 <output id="cloud-threshold-value" for="cloud-threshold">20%</output></span><input id="cloud-threshold" type="range" min="0" max="100" step="5" value="20" aria-label="相似连线显示阈值"></label>
+        </div>
+        <div class="cloud-layout">
+          <div class="cloud-left"><div class="cloud-chart-toolbar"><span id="cloud-status" role="status">正在读取组合数据…</span><div class="cloud-chart-actions"><button id="cloud-zoom-out" type="button" aria-label="缩小点云">−</button><button id="cloud-zoom-in" type="button" aria-label="放大点云">＋</button><button id="cloud-fit" type="button" aria-label="重置点云视图">适应</button></div></div>
+            <div class="cloud-chart" id="cloud-chart"><svg id="cloud-svg" xmlns="http://www.w3.org/2000/svg" height="410" role="group" aria-labelledby="cloud-svg-title cloud-svg-desc"><title id="cloud-svg-title">BH 组合相似度二维点云</title><desc id="cloud-svg-desc">每个节点代表一个BH。按相似度距离投影到二维，位置是近似，重叠点会轻微分散。通过节点或焦点下拉框选择BH，在旁边查看实际相似度及零件差异。鼠标拖动空白区域可平移。</desc></svg></div>
+            <div class="cloud-chart-footer"><div class="cloud-legend"><span><i></i>原始示例</span><span><i class="cloud-legend-local"></i>本地新增</span></div><span id="cloud-link-count">—</span><span>拖动平移 · 按钮缩放</span></div>
+          </div>
+          <div class="cloud-right">
+            <div class="cloud-selected-summary"><p class="cloud-focus-caption">当前焦点</p><div id="cloud-anchor-name" class="cloud-anchor-name">—</div><p id="cloud-anchor-meta" class="cloud-anchor-meta">选择一个 BH 开始探索</p><p class="cloud-near-label">最相近的组合</p><div class="cloud-neighbours" id="cloud-neighbours"></div></div>
+            <div class="cloud-comparison"><label class="cloud-compare-label">对比对象<select id="cloud-compare" disabled aria-label="选择与焦点对比的 BH"></select></label><div class="cloud-score-row"><strong id="cloud-score">—</strong><span id="cloud-score-label">数量加权 Jaccard</span></div><p id="cloud-diff-summary" class="cloud-diff-summary" aria-live="polite">—</p>
+              <div class="cloud-diff-scroll"><table class="cloud-diff-table"><caption class="sr-only">焦点与对比 BH 的完整零件数量对照</caption><thead><tr><th>零件号</th><th id="cloud-left-label">焦点</th><th id="cloud-right-label">对比</th><th>差异</th></tr></thead><tbody id="cloud-diff-body"></tbody></table></div>
+              <button id="cloud-use" class="button secondary cloud-use" type="button" disabled>将焦点清单用于精确匹配 <span aria-hidden="true">↗</span></button>
+            </div>
+          </div>
+        </div>
+        <p class="cloud-caveat"><strong>相似用于探索，复用 BH 仍须逐项完全一致。</strong> 二维距离为近似，重叠点会轻微错开；以相似分数和明细为准。最多展示焦点及其邻近的 80 个 BH。</p>
+      </section>
       <footer class="page-footer"><span>BH MATCH <span class="muted">/</span> 脱敏示例工作台</span><span>相同清单复用 BH，新增组合保存在本机。</span></footer>
       <div id="global-status" class="toast" role="status" hidden></div>
     </main>

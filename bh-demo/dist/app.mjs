@@ -1,5 +1,6 @@
 import { parseInput, findExact, validateCatalog, formatItems } from './domain.mjs';
 import { readLocal, createOrReuse, resetLocal, STORAGE_KEY } from './store.mjs';
+import { mountCloud } from './cloud-ui.mjs';
 
 const $ = id => document.getElementById(id);
 const input = $('parts-input');
@@ -12,6 +13,12 @@ let busy = false;
 let ready = false;
 let toastTimer;
 const initialResult = $('result').firstElementChild.cloneNode(true);
+const cloud = mountCloud($('similarity-cloud'), { onUse: record => {
+  if (!ready || busy) return;
+  load(record);
+  match();
+  $('main').scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+} });
 
 function element(tag, text, className) {
   const node = document.createElement(tag);
@@ -35,6 +42,7 @@ function error(message = '') {
 
 function setBusy(value) {
   busy = value;
+  cloud.setBusy(value);
   for (const id of ['parts-input', 'match', 'clear-input', 'load-sample', 'export', 'library-search']) {
     $(id).disabled = !ready || value;
   }
@@ -60,6 +68,7 @@ function refresh() {
   $('stat-local').textContent = locals.length;
   $('library-count').textContent = records.length;
   renderLibrary();
+  cloud.setRecords(records);
 }
 
 function renderLibrary() {
